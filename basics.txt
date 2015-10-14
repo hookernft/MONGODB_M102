@@ -1,0 +1,106 @@
+http://docs.mongodb.org/getting-started/shell/introduction/
+https://docs.mongodb.org/manual/
+https://docs.mongodb.org/manual/reference/sql-comparison/                                              
+                                              
+Inside the shell:
+help
+
+connect to:
+mongo user/password
+
+Show databases:
+show dbs
+Show current database:
+db
+Show collections (schemas kind of ) in the database:
+show collections
+
+How to query:
+
+database.collection.find().method1().method2().methodX()...
+
+select * from ....
+db.products.find({})
+db.products.find()
+  --{} is the expresion to find. Empty expression or nothing ( find() ) returns EVERYHITNG 
+  -- db is database
+  -- products is the collection
+  -- find is the method to query/find results
+
+-- returns only x fields
+select a.table from table a...
+db.products.find({},{projections}) -- in projectsion we will specify which field we want to
+db.products.find({},{a:1})
+db.products.find({},{a:1,b:1})
+db.products.find({},{name:1,surname:1,birth:1})
+db.products.find({},{a:1,b:1,.....x:1})
+
+-- returns only name WITHOUT _id, otherwise it will always does it by default  
+db.products.find({},{a:1},_id{}0)
+-- exclude fields ( will show everything but the values with 0 in the projection)
+db.products.find({},{noshowfiled:0})
+  
+select * from table WHERE...
+db.products.find({field:x})
+  db.products.find({a:99})  
+select field4.a,field5.a from table a where field=x
+db.products.find({field:x},{field4:1,field5:1})  
+
+-- expresion within find expresion
+$operators
+  querying:
+  -- $gte greater or equal
+  -- $gt  greater
+  -- $lt  less
+  -- $let less or equal
+  -- $or
+  -- $in
+  -- $not
+  -- $nin
+  -- $exits:true/false
+db.products.find({price:{$gte:200}}) 
+db.products.find({price:{$lt:100},colour:"BLACK"} ,{brand:1})
+db.products.find({price:{$lt:100},colour:"BLACK",age:{$let:7}} ,{brand:1}) -- where a=x and b=y and c=z ....
+db.products.find({name:{$not:"Hugo"},surname:"Diaz",age:{$gte:28}},{name:1,city:1,job:0})
+db.products.find({job:{exists:true}})
+....
+-- Query inside an array . Using "dot" notation. 
+ {
+ x:{a:1,b:2}
+ k:{
+  z:1,
+  j:4
+  l:{
+    coche:"red"
+    }
+  }
+ }
+ db.products.find({"x.a":1})
+ db.products.find({"x.k.l.coche":"red"})
+  
+-- return first result or the only results that match expresion
+--both methods return the same    
+db.products.findOne()
+db.products.findOne({}) 
+
+-- to format the exit
+db.products.find({}).toArray()
+-- count
+db.products.count()
+-- limit results to an X number of them ( it's executed in server side)
+db.products.find({}).limit(10)
+-- skip records
+-- limit results to an X number of them ( it's executed in server side)
+db.products.find({}).skip(10)
+  -- you can combine them
+    db.products.find({field1:10}).skip(10).limit(2)
+    
+-- sort
+-- it does returns null values first,in case the field is not present
+db.products.find({}).sort()
+                    -- key pattern inside sort which is a JSON expression. 1 / -1
+db.products.find({}).sort({price:1})
+db.products.find({}).sort({colour:1})
+db.products.find({},{name:1,age:1}).sort({colour:-1})                                                
+db.products.find({name:"GATES"},{name:1,age:1}).sort({money:1,age:1})
+                                              .sort({author:1,date_posted:-1})
